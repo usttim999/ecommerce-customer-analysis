@@ -37,3 +37,15 @@ WHEN viewed_pairs >= 10000 THEN 'large'
 WHEN viewed_pairs >= 1000 THEN 'medium'
 ELSE 'small' END AS sample_group
 FROM analytics.funnel_by_root_category;
+
+--проверка
+SELECT *
+FROM analytics.bi_kpi_overview;
+
+--проверка
+SELECT sample_group,
+       COUNT(*) AS categories_count,
+       SUM(viewed_pairs) AS viewed_pairs
+FROM analytics.bi_category_funnel
+GROUP BY sample_group
+ORDER BY MIN(viewed_pairs) DESC;
