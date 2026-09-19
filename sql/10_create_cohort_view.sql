@@ -5,7 +5,7 @@
 SET TIME ZONE 'UTC';
 
 CREATE OR REPLACE VIEW analytics.cohort_retention AS
-WITH buyer_months AS (SELECT DISTINCT visitor_id, DATE_TRUNC('month', order_time)::DATE AS order_month
+WITH buyer_months AS (SELECT DISTINCT visitor_id, DATE_TRUNC('month', order_time AT TIME ZONE 'UTC')::DATE AS order_month
 FROM analytics.orders),
 
 buyer_cohorts AS (SELECT visitor_id, MIN(order_month) AS cohort_month
@@ -23,7 +23,7 @@ cohort_sizes AS (SELECT cohort_month, COUNT(*) AS cohort_size
 FROM buyer_cohorts
 GROUP BY cohort_month),
 
-last_complete_period AS (SELECT (DATE_TRUNC('month', MAX(order_time)) - INTERVAL '1 month')::DATE AS last_complete_month
+last_complete_period AS (SELECT (DATE_TRUNC('month', MAX(order_time) AT TIME ZONE 'UTC') - INTERVAL '1 month')::DATE AS last_complete_month
 FROM analytics.orders),
 
 available_periods AS (SELECT s.cohort_month, s.cohort_size,
